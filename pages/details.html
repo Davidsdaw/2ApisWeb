@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalles Nutricionales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 text-center">
+    <h1 class="text-2xl font-bold">Información Nutricional</h1>
+  </header>
+
+  <!-- Main Section -->
+  <main class="p-6">
+    <section class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto text-center">
+      <h2 class="text-xl font-bold mb-4" id="ingredient-name">Cargando...</h2>
+      <p id="nutrition-data" class="text-gray-700">Espera mientras obtenemos la información nutricional.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center p-4">
+    <p>&copy; 2024 Recetas. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Actualiza el título con el nombre del ingrediente
+    document.getElementById('ingredient-name').textContent = ingredient;
+
+    // Función para obtener datos nutricionales de Edamam
+    const fetchNutrition = async () => {
+      const appId = 'APP_ID';
+      const appKey = 'APP_KEY';
+
+      try {
+        const response = await fetch(`https://api.edamam.com/api/food-database/v2/parser?ingr=${ingredient}&app_id=${appId}&app_key=${appKey}`);
+        const data = await response.json();
+
+        if (data.parsed && data.parsed.length > 0) {
+          const nutrients = data.parsed[0].food.nutrients;
+
+          document.getElementById('nutrition-data').innerHTML = `
+            <p><strong>Calorías:</strong> ${nutrients.ENERC_KCAL} kcal</p>
+            <p><strong>Proteínas:</strong> ${nutrients.PROCNT} g</p>
+            <p><strong>Grasas:</strong> ${nutrients.FAT} g</p>
+            <p><strong>Carbohidratos:</strong> ${nutrients.CHOCDF} g</p>
+          `;
+        } else {
+          document.getElementById('nutrition-data').textContent = 'No se encontraron datos nutricionales.';
+        }
+      } catch (error) {
+        console.error('Error al cargar información nutricional:', error);
+        document.getElementById('nutrition-data').textContent = 'Error al cargar datos.';
+      }
+    };
+
+    // Llama a la función para cargar datos nutricionales
+    fetchNutrition();
+  </script>
+</body>
+</html>

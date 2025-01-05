@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Recetas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 text-center">
+    <h1 class="text-2xl font-bold">Buscador de Recetas</h1>
+  </header>
+
+  <!-- Main Section -->
+  <main class="p-6 max-w-4xl mx-auto">
+    <!-- Buscador -->
+    <section class="mb-6">
+      <form id="search-form" class="flex items-center space-x-4">
+        <input 
+          type="text" 
+          id="search-input" 
+          class="flex-grow p-2 border rounded focus:outline-none" 
+          placeholder="Buscar una receta..."
+        >
+        <button 
+          type="submit" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Buscar
+        </button>
+      </form>
+    </section>
+
+    <!-- Resultados -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="recipes-container">
+      <div class="text-center" id="loading">Cargando recetas...</div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center p-4">
+    <p>&copy; 2024 Recetas. Todos los derechos reservados.</p>
+  </footer>
+<script src="./js/script.js"></script>
+</body>
+</html>
