@@ -5,43 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buscador de Recetas</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 text-gray-800">
+  <style>
+    /* Animaciones personalizadas */
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
 
+    .bounce-in {
+      animation: bounce-in 0.3s ease-out;
+    }
+
+    .hover-grow:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s;
+    }
+  </style>
+</head>
+<body class="bg-red-50 text-gray-900">
   <!-- Header -->
-  <header class="bg-blue-600 text-white p-4 text-center">
-    <h1 class="text-2xl font-bold">Buscador de Recetas</h1>
+  <header class="bg-red-600 py-6 shadow-lg">
+    <nav class="max-w-6xl mx-auto flex justify-between items-center px-6">
+      <h1 class="text-yellow-400 text-2xl font-bold">🍔 Recetario</h1>
+      <button id="view-favorites" class="bg-yellow-400 text-red-800 px-4 py-2 rounded hover:bg-yellow-500 hover-grow">
+        Ver Favoritos
+      </button>
+    </nav>
   </header>
 
+  <!-- Título -->
+  <section class="bg-white shadow-md py-6 mb-8">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-extrabold text-red-600">Buscador de Recetas</h2>
+      <p class="text-lg text-yellow-600 mt-2">¡Encuentra recetas deliciosas y rápidas como un combo perfecto! 🍟</p>
+    </div>
+  </section>
+
   <!-- Main Section -->
-  <main class="p-6 max-w-4xl mx-auto">
+  <main class="p-8 max-w-6xl mx-auto">
     <!-- Buscador -->
-    <section class="mb-6">
-      <form id="search-form" class="flex items-center space-x-4">
+    <section class="mb-8">
+      <form id="search-form" class="flex items-center bg-yellow-50 shadow-md rounded-lg overflow-hidden">
         <input 
           type="text" 
           id="search-input" 
-          class="flex-grow p-2 border rounded focus:outline-none" 
-          placeholder="Buscar una receta..."
-        >
+          class="flex-grow p-4 text-lg border-none focus:outline-none text-gray-700" 
+          placeholder="Buscar una receta...">
         <button 
           type="submit" 
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          class="bg-red-600 text-white px-6 py-3 font-semibold text-lg hover:bg-red-700 hover-grow">
           Buscar
         </button>
       </form>
     </section>
 
     <!-- Resultados -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="recipes-container">
-      <div class="text-center" id="loading">Cargando recetas...</div>
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="recipes-container">
+      <div class="text-center text-yellow-600" id="loading">Cargando recetas...</div>
     </section>
   </main>
 
+  <!-- Modal de Favoritos -->
+  <div id="favorites-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 relative bounce-in">
+      <button 
+        id="close-favorites-modal" 
+        class="absolute top-4 right-4 text-gray-600 hover:text-gray-800">
+        ✕
+      </button>
+      <h3 class="text-3xl font-bold text-red-600 mb-4">Mis Recetas Favoritas</h3>
+      <div 
+        id="favorites-container" 
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-auto" 
+        style="max-height: 400px;">
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white text-center p-4">
-    <p>&copy; 2024 Recetas. Todos los derechos reservados.</p>
+  <footer class="bg-red-600 text-yellow-400 text-center py-6 mt-12">
+    <p>&copy; 2024 Recetas. Todos los derechos reservados. 🍔</p>
   </footer>
+
+
 <script src="./js/script.js"></script>
 </body>
 </html>

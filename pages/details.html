@@ -6,18 +6,26 @@
   <title>Detalles Nutricionales</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
   <!-- Header -->
-  <header class="bg-blue-600 text-white p-4 text-center">
-    <h1 class="text-2xl font-bold">Información Nutricional</h1>
+  <header class="bg-blue-600 text-white p-6 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-3xl font-bold">Información Nutricional</h1>
+      <a href="../index.html" class="text-white bg-blue-800 px-4 py-2 rounded hover:bg-blue-900">
+        Volver a Recetas
+      </a>
+    </div>
   </header>
 
   <!-- Main Section -->
   <main class="p-6">
-    <section class="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto text-center">
-      <h2 class="text-xl font-bold mb-4" id="ingredient-name">Cargando...</h2>
-      <p id="nutrition-data" class="text-gray-700">Espera mientras obtenemos la información nutricional.</p>
+    <section class="container mx-auto bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-bold mb-4 text-center" id="ingredient-name">Cargando información...</h2>
+      <div id="nutrition-data" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Información de ingredientes cargada dinámicamente -->
+      </div>
+      <div id="total-calories" class="text-xl font-bold text-blue-600 text-center mt-6"></div>
     </section>
   </main>
 
@@ -27,38 +35,76 @@
   </footer>
 
   <script>
-    // Actualiza el título con el nombre del ingrediente
-    document.getElementById('ingredient-name').textContent = ingredient;
+    // Obtén el array de ingredientes desde el sessionStorage
+    const storedIngredients = JSON.parse(sessionStorage.getItem('selectedIngredients'));
 
-    // Función para obtener datos nutricionales de Edamam
-    const fetchNutrition = async () => {
-      const appId = 'APP_ID';
-      const appKey = 'APP_KEY';
+    if (!storedIngredients || storedIngredients.length === 0) {
+      // Si no hay ingredientes, muestra un mensaje de error
+      document.getElementById('ingredient-name').textContent = 'No se encontraron ingredientes.';
+      document.getElementById('nutrition-data').textContent = 'Por favor, selecciona al menos un ingrediente.';
+    } else {
+      document.getElementById('ingredient-name').textContent = 'Información Nutricional de los Ingredientes';
 
-      try {
-        const response = await fetch(`https://api.edamam.com/api/food-database/v2/parser?ingr=${ingredient}&app_id=${appId}&app_key=${appKey}`);
-        const data = await response.json();
+      // Función para obtener datos nutricionales de Edamam
+      const fetchNutrition = async (ingredient) => {
+        const appId = 'd5fa2a1c'; // Reemplaza con tu ID de aplicación
+        const appKey = '425b660b802084a2023c7823449297fd'; // Reemplaza con tu clave de aplicación
 
-        if (data.parsed && data.parsed.length > 0) {
-          const nutrients = data.parsed[0].food.nutrients;
+        try {
+          const response = await fetch(`https://api.edamam.com/api/food-database/v2/parser?ingr=${ingredient}&app_id=${appId}&app_key=${appKey}`);
+          const data = await response.json();
 
-          document.getElementById('nutrition-data').innerHTML = `
-            <p><strong>Calorías:</strong> ${nutrients.ENERC_KCAL} kcal</p>
-            <p><strong>Proteínas:</strong> ${nutrients.PROCNT} g</p>
-            <p><strong>Grasas:</strong> ${nutrients.FAT} g</p>
-            <p><strong>Carbohidratos:</strong> ${nutrients.CHOCDF} g</p>
-          `;
-        } else {
-          document.getElementById('nutrition-data').textContent = 'No se encontraron datos nutricionales.';
+          if (data.parsed && data.parsed.length > 0) {
+            const nutrients = data.parsed[0].food.nutrients;
+
+            return {
+              html: `
+                <div class="text-left bg-gray-100 rounded-lg p-4 mb-4 shadow">
+                  <p class="font-bold text-lg">${ingredient}</p>
+                  <p><strong>Calorías:</strong> ${nutrients.ENERC_KCAL || 'N/A'} kcal</p>
+                  <p><strong>Proteínas:</strong> ${nutrients.PROCNT || 'N/A'} g</p>
+                  <p><strong>Grasas:</strong> ${nutrients.FAT || 'N/A'} g</p>
+                  <p><strong>Carbohidratos:</strong> ${nutrients.CHOCDF || 'N/A'} g</p>
+                </div>
+              `,
+              calories: nutrients.ENERC_KCAL || 0,
+            };
+          } else {
+            return {
+              html: `<p class="text-red-500">No se encontraron datos nutricionales para ${ingredient}.</p>`,
+              calories: 0,
+            };
+          }
+        } catch (error) {
+          console.error('Error al cargar información nutricional:', error);
+          return {
+            html: `<p class="text-red-500">Error al cargar datos de ${ingredient}.</p>`,
+            calories: 0,
+          };
         }
-      } catch (error) {
-        console.error('Error al cargar información nutricional:', error);
-        document.getElementById('nutrition-data').textContent = 'Error al cargar datos.';
-      }
-    };
+      };
 
-    // Llama a la función para cargar datos nutricionales
-    fetchNutrition();
+      // Itera sobre los ingredientes y muestra los datos nutricionales
+      const loadNutritionData = async () => {
+        const nutritionContainer = document.getElementById('nutrition-data');
+        const totalCaloriesContainer = document.getElementById('total-calories');
+        nutritionContainer.innerHTML = ''; // Limpia el contenido anterior
+
+        let totalCalories = 0;
+
+        for (const ingredient of storedIngredients) {
+          const nutritionInfo = await fetchNutrition(ingredient);
+          nutritionContainer.innerHTML += nutritionInfo.html;
+          totalCalories += nutritionInfo.calories;
+        }
+
+        // Muestra el total de calorías
+        totalCaloriesContainer.textContent = `Calorías Totales: ${totalCalories.toFixed(2)} kcal`;
+      };
+
+      // Llama a la función para cargar los datos
+      loadNutritionData();
+    }
   </script>
 </body>
 </html>
