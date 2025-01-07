@@ -85,10 +85,22 @@ const displayFavorites = () => {
 };
 
 // Función para guardar ingredientes en el sessionStorage
-const saveIngredientsToSessionStorage = (ingredients) => {
+const saveToSessionStorage = (ingredients,photo,zone,instructions,video) => {
   let storedIngredients = JSON.parse(sessionStorage.getItem('selectedIngredients')) || [];
   storedIngredients = ingredients;
   sessionStorage.setItem('selectedIngredients', JSON.stringify(storedIngredients));
+  let storedPhoto = JSON.parse(sessionStorage.getItem('selectedIngredients')) || [];
+  storedPhoto = photo;
+  sessionStorage.setItem('selectedPhoto', JSON.stringify(storedPhoto));
+  let storedZone = JSON.parse(sessionStorage.getItem('selectedZone')) || [];
+  storedZone = zone;
+  sessionStorage.setItem('selectedZone', JSON.stringify(storedZone));
+  let storedInstructions = JSON.parse(sessionStorage.getItem('selectedInstructions')) || [];
+  storedInstructions = instructions;
+  sessionStorage.setItem('selectedInstructions', JSON.stringify(storedInstructions));
+  let storedVideo = JSON.parse(sessionStorage.getItem('selectedVideo')) || [];
+  storedVideo = video;
+  sessionStorage.setItem('selectedVideo', JSON.stringify(storedVideo));
 };
 
 // Función para obtener recetas desde The Meal DB
@@ -111,6 +123,10 @@ const fetchRecipes = async (query = '') => {
     recipes.forEach((meal) => {
       const ingredients = getIngredients(meal);
       const ingredientsList = ingredients.slice(0, 3).map(ing => `<li>${ing}</li>`).join('');
+      const photo = meal.strMealThumb;
+      const zone = meal.strArea;
+      const instructions = meal.strInstructions;
+      const video = meal.strYoutube;
 
       const recipeCard = document.createElement('div');
       recipeCard.classList.add('bg-white', 'rounded-lg', 'shadow-lg', 'p-6', 'flex', 'flex-col', 'items-center', 'relative', 'bounce-in', 'hover-grow');
@@ -136,7 +152,7 @@ const fetchRecipes = async (query = '') => {
       // Evento para guardar ingredientes y redirigir al hacer clic en "Ver Información Nutricional"
       recipeCard.querySelector('.nutritional-info-btn').addEventListener('click', (e) => {
         e.stopPropagation(); 
-        saveIngredientsToSessionStorage(ingredients); 
+        saveToSessionStorage(ingredients,photo,zone,instructions,video); 
         window.location.href = './pages/details.html';
       });
 
