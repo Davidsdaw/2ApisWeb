@@ -1,3 +1,4 @@
+import { Plato } from "./plato.js";
 const recipesContainer = document.getElementById('recipes-container');
 const loading = document.getElementById('loading');
 const searchForm = document.getElementById('search-form');
@@ -86,21 +87,8 @@ const displayFavorites = () => {
 
 // Función para guardar ingredientes en el sessionStorage
 const saveToSessionStorage = (ingredients,photo,zone,instructions,video) => {
-  let storedIngredients = JSON.parse(sessionStorage.getItem('selectedIngredients')) || [];
-  storedIngredients = ingredients;
-  sessionStorage.setItem('selectedIngredients', JSON.stringify(storedIngredients));
-  let storedPhoto = JSON.parse(sessionStorage.getItem('selectedIngredients')) || [];
-  storedPhoto = photo;
-  sessionStorage.setItem('selectedPhoto', JSON.stringify(storedPhoto));
-  let storedZone = JSON.parse(sessionStorage.getItem('selectedZone')) || [];
-  storedZone = zone;
-  sessionStorage.setItem('selectedZone', JSON.stringify(storedZone));
-  let storedInstructions = JSON.parse(sessionStorage.getItem('selectedInstructions')) || [];
-  storedInstructions = instructions;
-  sessionStorage.setItem('selectedInstructions', JSON.stringify(storedInstructions));
-  let storedVideo = JSON.parse(sessionStorage.getItem('selectedVideo')) || [];
-  storedVideo = video;
-  sessionStorage.setItem('selectedVideo', JSON.stringify(storedVideo));
+  const miPlato=new Plato(ingredients,photo,zone,instructions,video);
+  sessionStorage.setItem('objetoPlato', JSON.stringify(miPlato));
 };
 
 // Función para obtener recetas desde The Meal DB

@@ -1,9 +1,11 @@
-const storedIngredients = JSON.parse(sessionStorage.getItem('selectedIngredients'));
-const storedPhoto = JSON.parse(sessionStorage.getItem('selectedPhoto')) || null;
-const storedZone = JSON.parse(sessionStorage.getItem('selectedZone')) || 'Zona desconocida';
-const storedInstructions = JSON.parse(sessionStorage.getItem('selectedInstructions')) || 'No hay instrucciones disponibles.';
-const storedVideo = JSON.parse(sessionStorage.getItem('selectedVideo')) || null;
+// const objetoPlato._storedIngredients = JSON.parse(sessionStorage.getItem('selectedIngredients'));
+// const objetoPlato._storedPhoto = JSON.parse(sessionStorage.getItem('selectedPhoto')) || null;
+// const objetoPlato._storedZone = JSON.parse(sessionStorage.getItem('selectedZone')) || 'Zona desconocida';
+// const objetoPlato._storedInstructions = JSON.parse(sessionStorage.getItem('selectedInstructions')) || 'No hay instrucciones disponibles.';
+// const objetoPlato._storedVideo = JSON.parse(sessionStorage.getItem('selectedVideo')) || null;
 const summaryContainer = document.getElementById('recipe-summary');
+
+const objetoPlato = JSON.parse(sessionStorage.getItem('objetoPlato'));
 
 const renderSummary = () => {
     const fragment = document.createDocumentFragment();
@@ -19,9 +21,9 @@ const renderSummary = () => {
     const photoDiv = document.createElement('div');
     photoDiv.classList.add('flex', 'justify-center');
 
-    if (storedPhoto) {
+    if (objetoPlato._storedPhoto) {
         const photoImg = document.createElement('img');
-        photoImg.src = storedPhoto;
+        photoImg.src = objetoPlato._storedPhoto;
         photoImg.alt = 'Foto de la receta';
         photoImg.classList.add('w-32', 'h-32', 'object-cover', 'rounded-full', 'shadow-lg');
         photoDiv.appendChild(photoImg);
@@ -42,7 +44,7 @@ const renderSummary = () => {
 
     const zoneParagraph = document.createElement('p');
     zoneParagraph.classList.add('text-lg', 'text-gray-800', 'mb-2');
-    zoneParagraph.innerHTML = `<span class="font-bold text-blue-700">Zona:</span> ${storedZone}`;
+    zoneParagraph.innerHTML = `<span class="font-bold text-blue-700">Zona:</span> ${objetoPlato._storedZone}`;
 
     const instructionsDiv = document.createElement('div');
     instructionsDiv.classList.add('bg-blue-50', 'p-4', 'rounded-lg', 'shadow-inner');
@@ -52,7 +54,7 @@ const renderSummary = () => {
     instructionsTitle.classList.add('text-2xl', 'font-bold', 'text-blue-700', 'mb-3');
 
     const instructionsText = document.createElement('p');
-    instructionsText.textContent = storedInstructions;
+    instructionsText.textContent = objetoPlato._storedInstructions;
     instructionsText.classList.add('text-gray-800');
 
     instructionsDiv.appendChild(instructionsTitle);
@@ -69,18 +71,18 @@ const renderSummary = () => {
     const videoTitle = document.createElement('h3');
     videoTitle.textContent = 'Video Relacionado';
     videoTitle.classList.add('text-2xl', 'font-bold', 'text-center', 'text-blue-600', 'mb-4');
-
     let videoSection;
-    if (storedVideo) {
+    if (objetoPlato._storedVideo) {
         videoSection = document.createElement('div');
         videoSection.classList.add('flex', 'justify-center');
-
+    
         const iframe = document.createElement('iframe');
-        iframe.src = storedVideo;
-        iframe.frameBorder = '0';
+        iframe.src = objetoPlato._storedVideo.replace('watch?v=', 'embed/');
+        iframe.width = '560';
+        iframe.height = '315';
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
         iframe.allowFullscreen = true;
-
+    
         videoSection.appendChild(iframe);
     } else {
         videoSection = document.createElement('p');
@@ -103,7 +105,7 @@ const renderSummary = () => {
 // Llamar al renderizado del resumen
 renderSummary();
 
-if (!storedIngredients || storedIngredients.length === 0) {
+if (!objetoPlato._storedIngredients || objetoPlato._storedIngredients.length === 0) {
     // Si no hay ingredientes, muestra un mensaje de error
     document.getElementById('ingredient-name').textContent = 'No se encontraron ingredientes.';
     document.getElementById('nutrition-data').textContent = 'Por favor, selecciona al menos un ingrediente.';
@@ -158,7 +160,7 @@ if (!storedIngredients || storedIngredients.length === 0) {
 
         let totalCalories = 0;
 
-        for (const ingredient of storedIngredients) {
+        for (const ingredient of objetoPlato._storedIngredients) {
             const nutritionInfo = await fetchNutrition(ingredient);
             nutritionContainer.innerHTML += nutritionInfo.html;
             totalCalories += nutritionInfo.calories;
